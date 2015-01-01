@@ -1,0 +1,23 @@
+# this file is meant to be symlinked at the root of your car pooling project as ".editorconfig"
+# through the vendor/bin/ecolutis-editorconfig-setup executable
+#
+# see http://editorconfig.org/ for usage with your editor of choice
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = true
+
+[*.less]
+indent_size = 2
+
+[*.css]
+indent_size = 2
+
+[*.js]
+indent_size = 2

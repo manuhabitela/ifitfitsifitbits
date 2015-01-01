@@ -1,0 +1,5 @@
+{
+  "in": ["public/css/style.css"],
+  "out": "public/dist/style.css",
+  "autoprefixer": {"browsers": ["last 3 versions", "Android 2.3"]}
+}

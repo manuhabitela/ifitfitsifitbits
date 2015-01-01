@@ -1,0 +1,7 @@
+{
+  "name": "project",
+  "dependencies": {
+    "jquery": "latest",
+    "bootstrap": "~3.3.1"
+  }
+}
