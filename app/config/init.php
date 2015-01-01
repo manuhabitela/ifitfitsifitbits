@@ -11,7 +11,8 @@ define('LIB_PATH', APP_PATH.'/lib');
 define('MODELS_PATH', APP_PATH.'/models');
 define('WEBROOT_PATH', __DIR__.'/../../public');
 
-require APP_PATH.'/config/app.php';
+require CONFIG_PATH.'/app.php';
+require CONFIG_PATH.'/secrets.php';
 
 if (!defined('PROD'))
     define('PROD', (!empty($_SERVER['SERVER_NAME']) && strpos($_SERVER['SERVER_NAME'], APP_SERVER) !== false));

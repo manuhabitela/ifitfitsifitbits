@@ -4,7 +4,7 @@
 		"narrowspark/redbean": "dev-master",
 		"league/plates": "~3.1",
 		"thesavior/fitbit": "dev-master",
-		"google/apiclient": "~1.1"
+		"lusitanian/oauth": "dev-master"
 	},
 	"config": {
 		"vendor-dir": "app/vendor"

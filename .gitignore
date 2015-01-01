@@ -5,6 +5,7 @@
 *.sublime-*
 
 app/config/database.php
+app/config/secrets.php
 
 app/vendor
 composer.lock
