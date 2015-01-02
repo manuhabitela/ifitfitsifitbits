@@ -20,6 +20,10 @@
             <p class="obsolete-browser">You use an <strong>obsolete</strong> browser. <a href="http://browsehappy.com/" target="_blank">Update it</a> to navigate <strong>safely</strong> on the Internet!</p>
         <![endif]-->
 
+        <div class="container">
+            <?php echo $this->section('content') ?>
+        </div>
+
         <?php $js = ['/bower_components/jquery/dist/jquery.js', '/js/script.js'];
         foreach ($js as $script): ?>
         <script src="<?php echo $script ?>"></script>
