@@ -1,1 +1,43 @@
 @import "../bower_components/bootstrap/dist/css/bootstrap.css";
+
+@font-face {
+  font-family: 'Glyphicons Halflings';
+
+  src: url('../bower_components/bootstrap/fonts/glyphicons-halflings-regular.eot');
+  src: url('../bower_components/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../bower_components/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../bower_components/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../bower_components/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+
+body {
+  font-family: Roboto, sans-serif;
+  font-size: 16px;
+}
+
+ul, ol {
+  margin-bottom: 20px;
+}
+
+p:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-weight: 300;
+}
+
+.btn-success.btn-inverted {
+  background-color: #fff;
+  color: #5cb85c;
+  border-color: #4cae4c;
+}
+
+.btn-almost-disabled {
+  cursor: default;
+}
+
+.btn-success.btn-almost-disabled:hover,
+.btn-success.btn-almost-disabled:focus,
+.btn-success.btn-almost-disabled:active {
+  background-color: #fff;
+  color: #5cb85c;
+  border-color: #4cae4c;
+}

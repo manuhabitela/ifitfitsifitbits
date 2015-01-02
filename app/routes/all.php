@@ -19,7 +19,7 @@ $googleFit = new \GoogleFit\Api(
 );
 
 $app->get('/', function() use ($app, $fitbit, $googleFit) {
-    $viewVars = [];
+    $viewVars = ['synced' => []];
     if (!$fitbit->isAuthorized())
         $viewVars['fitbit']= true;
 
@@ -53,60 +53,80 @@ $app->get('/', function() use ($app, $fitbit, $googleFit) {
         return isset($set['originDataSourceId']) && !!in_array($set['originDataSourceId'], $filteredSources);
     });
 
-    //3. sort the data and group it by day and hour, meaning if we have one dataset at 12:30 and
-    //another one at 13:00, they'll be combined in one group corresponding to noon 12:00
-    $stepsByDay = [];
-    foreach ($filteredData as $set) {
+    //3. transform data to something better fit for fitbit (get it, get it?)
+    $sets = [];
+    foreach ($filteredData as $key => $set) {
         if ($set['dataTypeName'] === "com.google.step_count.delta") {
-            $startingTime = Halp::toSeconds($set['startTimeNanos']);
-            $setDay = date('Y-m-d', $startingTime);
-            $setHour = date('H', $startingTime);
-            $hourZone = Halp::roundedHour($setHour);
-
-            $stepsByDay[ $setDay ][ $hourZone ]= !empty($stepsByDay[ $setDay ][ $hourZone ])
-                ? $stepsByDay[ $setDay ][ $hourZone ] + $set['value'][0]['intVal']
-                : $set['value'][0]['intVal'];
+            $date = new DateTime();
+            $date->setTimestamp(Halp::toSeconds($set['startTimeNanos']));
+            $sets[]= [
+                'date'      => $date,
+                'duration'  => (int) (Halp::toSeconds($set['endTimeNanos']) - Halp::toSeconds($set['startTimeNanos']))*1000,
+                'steps'     => $set['value'][0]['intVal'],
+                'endTime'   => Halp::toSeconds($set['endTimeNanos']),
+                'startTime' => Halp::toSeconds($set['startTimeNanos'])
+            ];
         }
     }
 
-    //4. we add the steps in the fitbit account
-    //making sure we didn't already add it
-    $moderateWalkActivity = 17170;
-    $activityDate = new DateTime();
-    foreach ($stepsByDay as $day => $hourGroups) {
-        $activityDate->setDate(substr($day, 0, 4), substr($day, 5, 2), substr($day, -2));
+    //4. merge sets together when detecting close times (+/- 10 minutes)
+    $i = count($sets)-1;
+    while ($i) {
+        $currentSet = $sets[$i];
+        $prevSet = !empty($sets[$i-1]) ? $sets[$i-1] : null;
 
+        if ($prevSet) {
+            $prevSetArrivesIn = (int) ( ($currentSet['date']->getTimestamp() - $prevSet['date']->getTimestamp())/60); //minutes
+            if ($prevSetArrivesIn < 11) { //merge with prev
+                $sets[$i-1]['duration']  = (int) ($currentSet['endTime'] - $prevSet['startTime'])*1000; //milliseconds;
+                $sets[$i-1]['endTime']   = $currentSet['endTime'];
+                $sets[$i-1]['steps']     = $prevSet['steps'] + $currentSet['steps'];
+                unset($sets[$i]);
+            }
+        }
+
+        --$i;
+    }
+    $sets = array_values($sets);
+
+    //5. add the steps in the fitbit account, making sure we didn't already add it
+    //grouping by day to ease the check with fitbit api if the time hasn't been already set
+    $stepsByDay = [];
+    foreach ($sets as $set) {
+        $day = $set['date']->format('Y-m-d');
+        $stepsByDay[ $day ][]= $set;
+    }
+
+    $activityDate = new DateTime();
+    foreach ($stepsByDay as $day => $sets) {
+
+        $activityDate->setDate(substr($day, 0, 4), substr($day, 5, 2), substr($day, -2));
         $existingActivities = $fitbit->getActivities($activityDate);
         $existingActivities = !empty($existingActivities->activities) ? $existingActivities->activities : [];
 
-        foreach ($hourGroups as $hour => $steps) {
-
+        foreach ($sets as $set) {
             $alreadyExisting = false;
             foreach ($existingActivities as $activity) {
-                if ($activity->steps == $steps && $activity->startTime == "$hour:13") {
+                if ($activity->steps == $set['steps'] &&
+                    $activity->startTime == $set['date']->format('H:i') &&
+                    $activity->duration == $set['duration']) {
                     $alreadyExisting = true;
                     break;
                 }
             }
+
             if ($alreadyExisting)
                 continue;
 
-            $activityDate->setTime($hour, 13, 37);
-            //dirty trick to keep the walk miles per hour average:
-            //we calculate duration so that the 2.5mph fits
-            //we take an totally average stride length of 80cm to calculate distance of steps
-            // $distance = ($steps*80)/100000*0.621371192; //steps to cm to km to miles, yo
-            // $duration = round( ($distance / 2.5)*60*60*1000 ); //hours to minutes to seconds to milliseconds, ya
-            //or, well, you know, NOT
-            $duration = round( 30*60*1000 ); //30 minutes to seconds to milliseconds, ya
             $fitbit->logActivity(
-                $activityDate,
-                $moderateWalkActivity,
-                $duration,
+                $set['date'],
+                17170, //walking activity fitbit id
+                $set['duration'],
                 null,
-                $steps,
+                $set['steps'],
                 "Steps"
             );
+            $viewVars['synced'][]= $set;
         }
     }
 
@@ -116,6 +136,9 @@ $app->get('/', function() use ($app, $fitbit, $googleFit) {
 
 $app->get('/fitbit-login', function() use ($app, $fitbit) {
     $fitbit->initSession();
+    if ($fitbit->isAuthorized()) {
+        $app->redirect(HOST);
+    }
 });
 
 $app->get('/google-login', function() use ($app, $googleFit) {

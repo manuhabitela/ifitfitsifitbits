@@ -1,7 +1,6 @@
 {
 	"require": {
 		"slim/slim": "2.*",
-		"narrowspark/redbean": "dev-master",
 		"league/plates": "~3.1",
 		"thesavior/fitbit": "dev-master",
 		"lusitanian/oauth": "dev-master"
