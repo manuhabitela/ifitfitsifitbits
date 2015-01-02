@@ -24,6 +24,15 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-weight: 300;
 }
 
+.panel-body p:last-child {
+  margin-bottom: 0;
+}
+
+.footer {
+  font-size: 14px;
+  margin-top: 80px;
+}
+
 .btn-success.btn-inverted {
   background-color: #fff;
   color: #5cb85c;

@@ -45,9 +45,9 @@ $app->get('/', function() use ($app, $fitbit, $googleFit) {
     //and filter out all data which isnt from a watch
     $data = $googleFit->req(sprintf(
         'https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%s-%s',
-        str_replace(" ", "%20", "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps"),
-        Halp::toNanos(strtotime('-7 days')),
-        Halp::toNanos(time())
+        "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps",
+        number_format(Halp::toNanos(strtotime('-7 days')), 0, '', ''),
+        number_format(Halp::toNanos(time()), 0, '', '')
     ));
     $filteredData = array_filter($data['point'], function($set) use ($filteredSources) {
         return isset($set['originDataSourceId']) && !!in_array($set['originDataSourceId'], $filteredSources);

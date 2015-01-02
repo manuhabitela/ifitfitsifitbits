@@ -15,9 +15,9 @@ SetEnv SESSION_USE_TRANS_SID 0
 	RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
 	RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
 
-	  #pas d'index.php
-	  RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.php\ HTTP/
-  	RewriteRule ^index\.php$ http://xxxx/ [R=301,L]
+	#pas d'index.php
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.php\ HTTP/
+  	RewriteRule ^index\.php$ http://googlefeedbit.habite.la/ [R=301,L]
 
   	#slim
   	RewriteCond %{REQUEST_FILENAME} !-f

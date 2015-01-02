@@ -26,7 +26,7 @@ $app = new \Slim\Slim(array(
     'view' => $view,
     'templates.path' => APP_PATH.'/views',
     'debug' => intval(!PROD),
-    'mode' => 'development'
+    'mode' => PROD ? 'production' : 'development'
 ));
 
 define('HOST', $app->request()->getUrl());

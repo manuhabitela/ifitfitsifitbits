@@ -22,7 +22,12 @@
         <![endif]-->
 
         <div class="container">
-            <?php echo $this->section('content') ?>
+            <div class="content">
+                <?php echo $this->section('content') ?>
+            </div>
+            <div class="footer text-center">
+                <p>Fait à l'arrache par <a href="http://twitter.com/leimina">Leimi</a> - <a href="http://github.com/Leimi/ifitfitsifitbits">Voir le code</a>.
+            </div>
         </div>
 
         <?php $js = ['/bower_components/jquery/dist/jquery.js', '/js/script.js'];
