@@ -3,23 +3,29 @@
 include LIB_PATH.'/GoogleFit.php';
 include LIB_PATH.'/Halp.php';
 
-$fitbit = new \Fitbit\Api(
-    FITBIT_CLIENT,
-    FITBIT_SECRET,
-    HOST.'/fitbit-login',
-    "json",
-    new \OAuth\Common\Storage\Session(false)
-);
+function getFitbit() {
+    return new \Fitbit\Api(
+        FITBIT_CLIENT,
+        FITBIT_SECRET,
+        HOST.'/fitbit-login',
+        "json",
+        new \OAuth\Common\Storage\Session(false)
+    );
+}
 
-$googleFit = new \GoogleFit\Api(
-    GOOGLE_CLIENT,
-    GOOGLE_SECRET,
-    HOST.'/google-login',
-    new \OAuth\Common\Storage\Session(false)
-);
+function getGoogleFit() {
+    return new \GoogleFit\Api(
+        GOOGLE_CLIENT,
+        GOOGLE_SECRET,
+        HOST.'/google-login',
+        new \OAuth\Common\Storage\Session(false)
+    );
+}
 
-$app->get('/', function() use ($app, $fitbit, $googleFit) {
-    $viewVars = ['synced' => []];
+$app->get('/', function() use ($app) {
+    $fitbit = getFitbit();
+    $googleFit = getGoogleFit();
+
     if (!$fitbit->isAuthorized())
         $viewVars['fitbit']= true;
 
@@ -32,6 +38,15 @@ $app->get('/', function() use ($app, $fitbit, $googleFit) {
         $app->render('home', $viewVars);
         return true;
     }
+
+    $success = $app->request->get('success');
+    if (!empty($success)) {
+        $viewVars['done'] = true;
+        $app->render('home', $viewVars);
+        return true;
+    }
+
+    $viewVars = ['toDo' => []];
 
     //1. get the list of OK sources we want data from, here it is the android watches
     $sources = $googleFit->req('https://www.googleapis.com/fitness/v1/users/me/dataSources');
@@ -118,30 +133,49 @@ $app->get('/', function() use ($app, $fitbit, $googleFit) {
             if ($alreadyExisting)
                 continue;
 
-            $fitbit->logActivity(
-                $set['date'],
-                17170, //walking activity fitbit id
-                $set['duration'],
-                null,
-                $set['steps'],
-                "Steps"
-            );
-            $viewVars['synced'][]= $set;
+            $viewVars['toDo'][]= $set;
         }
     }
 
-    $viewVars['done'] = true;
     $app->render('home', $viewVars);
 });
 
-$app->get('/fitbit-login', function() use ($app, $fitbit) {
+$app->post('/', function() use ($app) {
+    $fitbit = getFitbit();
+    $sets = $app->request->post('sets');
+
+    if (empty($sets))
+        $app->redirect(HOST);
+
+    foreach ($sets as &$set) {
+        $set = json_decode($set, true);
+        $date = new DateTime();
+        $date->setTimestamp($set['date']);
+        $set['date'] = $date;
+
+        $fitbit->logActivity(
+            $set['date'],
+            17170, //walking activity fitbit id
+            $set['duration'],
+            null,
+            $set['steps'],
+            "Steps"
+        );
+    }
+
+    $app->redirect(HOST.'?success=ofcourseitsucceededcomeonwhatdidyouthink');
+});
+
+$app->get('/fitbit-login', function() use ($app) {
+    $fitbit = getFitbit();
     $fitbit->initSession();
     if ($fitbit->isAuthorized()) {
         $app->redirect(HOST);
     }
 });
 
-$app->get('/google-login', function() use ($app, $googleFit) {
+$app->get('/google-login', function() use ($app) {
+    $googleFit = getGoogleFit();
     $googleFit->initSession();
     if ($googleFit->isAuthorized()) {
         $app->redirect(HOST);

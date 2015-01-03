@@ -20,8 +20,8 @@ p:not(:last-child) {
   margin-bottom: 20px;
 }
 
-h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-weight: 300;
+.table>tbody>tr:first-child>td {
+  border-top: none;
 }
 
 .panel-body p:last-child {
@@ -31,6 +31,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 .footer {
   font-size: 14px;
   margin-top: 80px;
+}
+
+.x-small {
+  font-size: 75%;
 }
 
 .btn-success.btn-inverted {
@@ -49,4 +53,36 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   background-color: #fff;
   color: #5cb85c;
   border-color: #4cae4c;
+}
+
+.list-inline {
+  margin-bottom: 0;
+}
+
+.list-inline li {
+  margin-bottom: 20px;
+}
+
+.panel-heading {
+  text-align: center;
+}
+
+.panel-body,
+.panel-to-import button {
+  display: table;
+  margin: auto;
+}
+
+.page-header span,
+.page-header img {
+  display: inline-block;
+  max-height: 80px;
+  vertical-align: middle;
+  font-size: 50px;
+}
+
+@media screen and (min-width: 992px) {
+  .panel-body {
+    max-width: 670px;
+  }
 }

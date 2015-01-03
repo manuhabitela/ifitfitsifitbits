@@ -13,7 +13,6 @@
 
         <link href='http://fonts.googleapis.com/css?family=Roboto:300,700,400' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="/dist/style.css">
-        <script src="/js/modernizr.custom.js"></script>
     </head>
     <body>
 
@@ -26,11 +25,11 @@
                 <?php echo $this->section('content') ?>
             </div>
             <div class="footer text-center">
-                <p>Fait à l'arrache par <a href="http://twitter.com/leimina">Leimi</a> - <a href="http://github.com/Leimi/ifitfitsifitbits">Voir le code</a>.
+                <p>Made <em>à l'arrache</em> by <a href="http://twitter.com/leimina">Leimi</a> - <a href="http://github.com/Leimi/ifitfitsifitbits">See the code and even contribute IF YOU DARE</a>.
             </div>
         </div>
 
-        <?php $js = ['/bower_components/jquery/dist/jquery.js', '/js/script.js'];
+        <?php $js = [];
         foreach ($js as $script): ?>
         <script src="<?php echo $script ?>"></script>
         <?php endforeach; ?>
