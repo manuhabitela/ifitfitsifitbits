@@ -48,29 +48,18 @@ $app->get('/', function() use ($app) {
 
     $viewVars = ['toDo' => []];
 
-    //1. get the list of OK sources we want data from, here it is the android watches
-    $sources = $googleFit->req('https://www.googleapis.com/fitness/v1/users/me/dataSources');
-    $filteredSources = [];
-    foreach ($sources["dataSource"] as $source) {
-        if (!empty($source['device']) && $source['device']['type'] === 'watch')
-            $filteredSources[]= $source['dataStreamId'];
-    }
-
-    //2. get the estimated steps dataset from last week
-    //and filter out all data which isnt from a watch
+    //1. get the estimated steps dataset from last week
     $data = $googleFit->req(sprintf(
         'https://www.googleapis.com/fitness/v1/users/me/dataSources/%s/datasets/%s-%s',
         "derived:com.google.step_count.delta:com.google.android.gms:estimated_steps",
         number_format(Halp::toNanos(strtotime('-7 days')), 0, '', ''),
         number_format(Halp::toNanos(time()), 0, '', '')
     ));
-    $filteredData = array_filter($data['point'], function($set) use ($filteredSources) {
-        return isset($set['originDataSourceId']) && !!in_array($set['originDataSourceId'], $filteredSources);
-    });
+    $data = $data['point'];
 
-    //3. transform data to something better fit for fitbit (get it, get it?)
+    //2. transform data to something better fit for fitbit (get it, get it?)
     $sets = [];
-    foreach ($filteredData as $key => $set) {
+    foreach ($data as $key => $set) {
         if ($set['dataTypeName'] === "com.google.step_count.delta") {
             $date = new DateTime();
             $date->setTimestamp(Halp::toSeconds($set['startTimeNanos']));
@@ -84,7 +73,8 @@ $app->get('/', function() use ($app) {
         }
     }
 
-    //4. merge sets together when detecting close times (+/- 10 minutes)
+    //3. merge sets together when detecting close times (+/- 10 minutes)
+    //and remove not interesting sets (less than 30 steps or less than 3 minutes, this is a totally random choice by ME)
     $i = count($sets)-1;
     while ($i) {
         $currentSet = $sets[$i];
@@ -102,9 +92,13 @@ $app->get('/', function() use ($app) {
 
         --$i;
     }
+    foreach ($sets as $k => $set) {
+        if ($set['steps'] <= 30 || ($set['steps'] <= 30 && $set['duration'] <= 3*1000*60))
+            unset($sets[$k]);
+    }
     $sets = array_values($sets);
 
-    //5. add the steps in the fitbit account, making sure we didn't already add it
+    //4. add the steps in the fitbit account, making sure we didn't already add it
     //grouping by day to ease the check with fitbit api if the time hasn't been already set
     $stepsByDay = [];
     foreach ($sets as $set) {

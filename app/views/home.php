@@ -2,8 +2,8 @@
     <div class="col-xs-12">
         <div class="page-header">
             <h1 class="text-center">
-                <img src="/img/google-fit.png" title="Your Google Fit &amp; Android Wear" alt="Google Fit icon">
-                <img src="/img/steps.png" title="collected footsteps" alt="Footsteps">
+                <img src="/img/google-fit.png" title="Your Google Fit" alt="Google Fit icon">
+                <img src="/img/steps.png" title="collected steps" alt="Footsteps">
                 <span title="in">&rarr;</span>
                 <img src="/img/fitbit.png" title="your Fitbit account" alt="Fitbit icon">
                 <span title="equals">=</span>
@@ -92,7 +92,7 @@
                 <h3 class="panel-title">What is this madness?</h3>
             </div>
             <div class="panel-body">
-                <p>This website lets you import your <em>not-older-than-a-week</em> Android Wear tracked steps in your Fitbit account.</p>
+                <p>This website lets you import your <em>not-older-than-a-week</em> Google Fit tracked steps in your Fitbit account.</p>
                 <ol>
                     <li>Login with both your Google and Fitbit accounts</li>
                     <li>(Un)check (un)desired stuff and click the green thingy</li>
