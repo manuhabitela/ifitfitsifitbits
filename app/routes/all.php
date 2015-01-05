@@ -58,6 +58,11 @@ $app->get('/', function() use ($app) {
     $data = $data['point'];
 
     //2. transform data to something better fit for fitbit (get it, get it?)
+    $fitBitUserData = $fitbit->getProfile();
+    $timezone = !empty($fitBitUserData->user->timezone) ? $fitBitUserData->user->timezone : null;
+    if (in_array($timezone, DateTimeZone::listIdentifiers(DateTimeZone::ALL)))
+        date_default_timezone_set($fitBitUserData->user->timezone);
+
     $sets = [];
     foreach ($data as $key => $set) {
         if ($set['dataTypeName'] === "com.google.step_count.delta") {
