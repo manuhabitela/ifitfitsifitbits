@@ -37,14 +37,6 @@ p:not(:last-child) {
   font-size: 75%;
 }
 
-.text-success {
-  color: #5cb85c;
-}
-
-.btn.disabled, .btn[disabled], fieldset[disabled] .btn {
-  opacity: .75;
-}
-
 .btn-success.btn-inverted {
   background-color: #fff;
   color: #5cb85c;
@@ -87,15 +79,6 @@ p:not(:last-child) {
   max-height: 80px;
   vertical-align: middle;
   font-size: 50px;
-}
-
-.list-required-fields li {
-  vertical-align: bottom;
-}
-
-.list-required-fields .form-group {
-  /*text-align: left;*/
-  margin-bottom: 0;
 }
 
 @media screen and (min-width: 992px) {

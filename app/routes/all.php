@@ -23,11 +23,6 @@ function getGoogleFit() {
 }
 
 $app->get('/', function() use ($app) {
-    $timezoneList = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
-    $timezone = $app->request->get('timezone');
-    $timezone = $timezone && in_array($timezone, $timezoneList) ? $timezone : date_default_timezone_get();
-    $viewVars = ['timezoneList' => $timezoneList];
-
     $fitbit = getFitbit();
     $googleFit = getGoogleFit();
 
@@ -51,13 +46,7 @@ $app->get('/', function() use ($app) {
         return true;
     }
 
-    $raw = $app->request->get('raw');
-    if (empty($raw)) {
-        $app->render('home', $viewVars);
-        return true;
-    }
-
-    $viewVars['toDo'] = [];
+    $viewVars = ['toDo' => []];
 
     //1. get the estimated steps dataset from last week
     $data = $googleFit->req(sprintf(
@@ -142,9 +131,7 @@ $app->get('/', function() use ($app) {
         }
     }
 
-    $viewVars['layout'] = false;
-    $app->render('partials/import-panel', $viewVars);
-    return true;
+    $app->render('home', $viewVars);
 });
 
 $app->post('/', function() use ($app) {

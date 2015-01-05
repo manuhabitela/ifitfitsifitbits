@@ -29,7 +29,8 @@
             </div>
         </div>
 
-        <?php foreach (unserialize(APP_SCRIPTS) as $script): ?>
+        <?php $js = [];
+        foreach ($js as $script): ?>
         <script src="<?php echo $script ?>"></script>
         <?php endforeach; ?>
     </body>
