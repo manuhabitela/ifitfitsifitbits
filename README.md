@@ -1,7 +1,8 @@
 
 ## :warning: Disclaimer
 
-This project is not maintained anymore and is a small try at pulling google fit data in a fitbit account. It is quick-and-dirty code with weird logic, but it worked well for me when I used it. I basically don't wear my Android watch anymore since a while now so I didn't keep up with the development of this tool.
+This project is not maintained anymore. I'll gladly merge your contributions though ;)
+It's a small try at pulling google fit data in a fitbit account. It is quick-and-dirty code with weird logic, but it worked well for me when I used it. I basically don't wear my Android watch anymore since a while now so I didn't keep up with the development of this tool.
 
 # GoogleFeedBit
 
