@@ -98,7 +98,7 @@
                     <li>(Un)check (un)desired stuff and click the green thingy</li>
                     <li><em>Voilà!</em></li>
                 </ol>
-                <p class="x-small">this is quick and dirty stuff, sorry if it doesn't work for you. And I certainly won't help if that's the case 'cause I'm the laziest</p>
+                <p class="x-small">this is quick and dirty stuff, sorry if it doesn't work for you.</p>
             </div>
         </div>
     </div>
